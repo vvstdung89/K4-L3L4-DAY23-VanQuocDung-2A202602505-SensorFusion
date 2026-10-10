@@ -8,7 +8,7 @@
 - MSSV: 2A202602505
 - Email: [vvstdung89@gmail.com](mailto:vvstdung89@gmail.com)
 - Link repo (fork): [https://github.com/vvstdung89/K4-L3L4-DAY23-VanQuocDung-2A202602505-SensorFusion](https://github.com/vvstdung89/K4-L3L4-DAY23-VanQuocDung-2A202602505-SensorFusion)
-- Commit hash nộp (`git rev-parse HEAD`): commit cuối trên `main`, nộp kèm link trên LMS. Code E–H và artifacts chấm điểm được tạo ở commit `204774ada6e931061a4144e7cde80df310d4d114` (CP5); các commit sau chỉ sửa báo cáo và thêm bằng chứng bonus trong `student/bonus/`, không đổi code E–H hay artifacts.
+- Commit hash nộp (`git rev-parse HEAD`): `73179147e60e1dd69fd10b02ef551465a47b5646` 
 
 ## Tóm tắt kết quả
 
@@ -64,15 +64,15 @@ thường không lặp lại đủ.
 - **Giới hạn.** Đo camera trong lab là tâm hộp 2D ground-truth FRONT cộng nhiễu theo `seed`,
 không phải camera detector.
   - Nhiễu thêm vào chỉ có σ = 0.5 px (`run_lab.py`, `rng.normal(0, 0.5, 2)`), trong khi `R`
-    giả định σ = 5 px.
+  giả định σ = 5 px.
   - Dù vậy đo này **có bias**: với calibration đúng, innovation camera trung bình là
-    γu ≈ −9.5 px và γv ≈ +8.5 px (bonus). Tâm hộp 2D là tâm phần nhìn thấy, có thể bị cắt ở mép
-    ảnh như T10 ở frame 116, nên không trùng với hình chiếu tâm hộp 3D. Lệch thời gian
-    camera/LiDAR cũng có thể góp phần; chưa tách được hai nguyên nhân này.
+  γu ≈ −9.5 px và γv ≈ +8.5 px (bonus). Tâm hộp 2D là tâm phần nhìn thấy, có thể bị cắt ở mép
+  ảnh như T10 ở frame 116, nên không trùng với hình chiếu tâm hộp 3D. Lệch thời gian
+  camera/LiDAR cũng có thể góp phần; chưa tách được hai nguyên nhân này.
   - Bias γv giải thích vì sao z xấu đi. Bias γu không phải lỗi calibration: thí nghiệm yaw
-    +0.25° đưa γu về ≈ 0 nhưng RMSE y lại tăng từ 0.062 lên 0.075 m.
+  +0.25° đưa γu về ≈ 0 nhưng RMSE y lại tăng từ 0.062 lên 0.075 m.
   - Vì vậy kết quả fused tốt hơn **không** chứng minh một hệ perception có camera thật sẽ tốt
-    hơn, vì detector thật có miss, FP, bias và lệch calibration.
+  hơn, vì detector thật có miss, FP, bias và lệch calibration.
 
 Chạy từ root repo:
 
@@ -140,43 +140,43 @@ chấp nhận cả `metrics.json` và hai cặp file per-mode.
     so với 0.0488). Camera chỉ tinh chỉnh trạng thái của track **đã tồn tại**. Nếu là
     fuse-then-track, camera sẽ ảnh hưởng tới việc sinh/xác nhận track và các số đếm sẽ khác.
 4. **Nếu camera lệch calibration, triệu chứng gì trên innovation/residual?**
- (Đã đo trong bonus: bảng ở mục Bonus, chi tiết ở `student/bonus/calibration_table.md`.)
+Đã đo trong bonus: bảng ở mục Bonus, chi tiết ở `student/bonus/calibration_table.md`.)
   - **Innovation có bias tuyến tính theo góc lệch (khi lệch nhỏ).** Extrinsic sai làm `h(x)`
-    lệch có hệ thống, nên innovation camera `γ = z − h(x)` dịch trung bình:
+  lệch có hệ thống, nên innovation camera `γ = z − h(x)` dịch trung bình:
     - lệch yaw từ −0.5° đến +1° chỉ dịch `u`: +36.0 đến +36.7 px/°, trong khi γv gần như không
-      đổi (+8.2 đến +8.8 px);
+    đổi (+8.2 đến +8.8 px);
     - lệch pitch chỉ dịch `v` ở mọi mức (+0.5° đến +2°): −35.5 đến −36.4 px/°;
     - lý thuyết f·π/180 = 2083·π/180 ≈ 36.4 px/°, khớp với đo đạc trong vùng này.
     - Ở yaw −1°, ±2°, +5°, độ dốc giảm còn 32.6, 22.5–26.0 và 15.9 px/° (yaw +5° cho γu = +69.9 px
-      thay vì ≈ +172 px theo lý thuyết), và γv lệch khỏi +8.5 px (−1°: +5.8; ±2°: ≈ −8; +5°:
-      −16.3). Có thể do khi lệch ngang lớn, đo gần nhất theo d² không còn là hộp của chính xe đó
-      mà là hộp của xe bên cạnh; giả thuyết này chưa kiểm chứng riêng.
+    thay vì ≈ +172 px theo lý thuyết), và γv lệch khỏi +8.5 px (−1°: +5.8; ±2°: ≈ −8; +5°:
+    −16.3). Có thể do khi lệch ngang lớn, đo gần nhất theo d² không còn là hộp của chính xe đó
+    mà là hộp của xe bên cạnh; giả thuyết này chưa kiểm chứng riêng.
   - Lệch tịnh tiến (bias phụ thuộc khoảng cách) **không đo**.
-  - **`d²` tăng theo góc lệch.** Median `d²` của cặp gần nhất là 1.6 khi calibration đúng,
-    2.0–9.1 ở ±0.5°, 8.3–23.4 ở ±1°, và 42–67 ở ±2°.
+  - `**d²` tăng theo góc lệch.** Median `d²` của cặp gần nhất là 1.6 khi calibration đúng,
+  2.0–9.1 ở ±0.5°, 8.3–23.4 ở ±1°, và 42–67 ở ±2°.
   - **Lệch nhỏ (yaw +0.25°, yaw +0.5°, pitch +0.5°): cổng không bắt được.** 98–99% cặp vẫn qua
-    cổng nhưng kéo lệch vị trí theo đúng trục:
+  cổng nhưng kéo lệch vị trí theo đúng trục:
     - yaw +0.5°: RMSE y 0.062 → 0.142 m, RMSE 0.194 m, xấu hơn LiDAR-only (0.150) 0.043 m, sát
-      ngưỡng nhất quán 0.05 m của rubric (ngưỡng này so fused với LiDAR-only);
+    ngưỡng nhất quán 0.05 m của rubric (ngưỡng này so fused với LiDAR-only);
     - pitch +0.5°: RMSE z 0.077 → 0.139 m.
   - **Lệch trung bình (yaw −0.5°, yaw +1°, pitch +1°): tệ nhất.** Cổng loại 38–56% cặp. Các cặp
-    còn lọt qua đều lệch cùng một hướng, nên RMSE là 0.211, 0.256 và 0.214 m, tức xấu hơn
-    LiDAR-only +0.061, +0.106 và +0.063 m: **vượt** ngưỡng nhất quán 0.05 m.
+  còn lọt qua đều lệch cùng một hướng, nên RMSE là 0.211, 0.256 và 0.214 m, tức xấu hơn
+  LiDAR-only +0.061, +0.106 và +0.063 m: **vượt** ngưỡng nhất quán 0.05 m.
   - **Lệch lớn (yaw −1°, ±2°, +5°, pitch +2°): cổng loại 97–100% cặp với track confirmed, nhưng
-    không hoàn toàn an toàn.**
+  không hoàn toàn an toàn.**
     - yaw +2° và +5° gần về LiDAR-only (0.155 và 0.154 m);
     - yaw −1° (0.173 m), yaw −2° (0.176 m) và pitch +2° (0.212 m) vẫn xấu hơn rõ; riêng pitch +2°
-      xấu hơn LiDAR-only +0.062 m, vượt ngưỡng nhất quán;
+    xấu hơn LiDAR-only +0.062 m, vượt ngưỡng nhất quán;
     - lý do: vài update vẫn lọt qua, và 35–62% trong số đó (yaw −1°: 7/20, yaw −2°: 7/19,
-      pitch +2°: 8/13) rơi vào track mới chưa confirmed, vì `P` lớn làm cổng rất rộng. Những update này làm sai trạng thái
-      ban đầu, và sai số còn kéo dài về sau.
+    pitch +2°: 8/13) rơi vào track mới chưa confirmed, vì `P` lớn làm cổng rất rộng. Những update này làm sai trạng thái
+    ban đầu, và sai số còn kéo dài về sau.
   - **Bất đối xứng.** Do đo vốn có bias γu ≈ −9.5 px, yaw −0.5° cộng dồn bias nên 38% cặp bị
-    loại, còn yaw +0.5° bù trừ bias nên chỉ 2% bị loại.
+  loại, còn yaw +0.5° bù trừ bias nên chỉ 2% bị loại.
   - **Kết luận.** Cổng χ² chỉ xét từng cặp nên không phát hiện được bias nhỏ. Cần theo dõi
-    trung bình innovation theo thời gian (khác 0 là dấu hiệu lệch calibration) thay vì chỉ
-    dựa vào cổng.
+  trung bình innovation theo thời gian (khác 0 là dấu hiệu lệch calibration) thay vì chỉ
+  dựa vào cổng.
 5. **Vì sao `associate_and_update(..., sensor)` cần sensor tường minh ở frame rỗng? Giải thích vì
- sao lidar quyết định score/init/delete còn camera chỉ EKF update.**
+ao lidar quyết định score/init/delete còn camera chỉ EKF update.**
   - Khi `meas_list` rỗng thì không có `meas.sensor` để biết đây là lượt lidar hay camera. Nhưng
    lượt **lidar** rỗng vẫn phải chạy `manage_tracks` để trừ score cho track trong FOV và xoá
    track hết hạn. Nếu bỏ qua, track ma sẽ sống mãi khi detector không thấy gì. Vì vậy hàm luôn
@@ -192,7 +192,7 @@ chấp nhận cả `metrics.json` và hai cặp file per-mode.
   - Trong code: `handle_updated_track` chỉ ghi hit khi `sensor.name == "lidar"`, và
   `manage_tracks` return ngay với lượt camera.
 6. **Nêu điều kiện xác nhận, giữ confirmed sau miss, và điều kiện xóa track.**
- (`track_management.py:44-90`, tham số từ `get_tracking_params()`.)
+`track_management.py:44-90`, tham số từ `get_tracking_params()`.)
   - **Khởi tạo:** từ đo lidar chưa ghép. `score = 1/window = 1/6`, `state = "initialized"`,
    vận tốc 0 với σ = (50, 50, 5).
   - **Score:** mỗi hit lidar cộng 1/6 (tối đa 1). Mỗi miss **trong FOV lidar** trừ 1/6.
@@ -222,44 +222,44 @@ python student/bonus/bonus_study.py --config student/config/paths.yaml
 ```
 
 - Script đi một lượt qua frame 0–198 (seed 0). Detector chạy một lần mỗi frame, sau đó 13 biến
-  thể tracker chạy song song trên cùng detection: LiDAR-only, fused, và fused với extrinsic
-  camera bị xoay.
+thể tracker chạy song song trên cùng detection: LiDAR-only, fused, và fused với extrinsic
+camera bị xoay.
 - Script chỉ import helper của platform: không sửa `platform/`, không ghi vào
-  `student/artifacts/`. Đã kiểm tra checksum 6 file artifacts trước và sau khi chạy: không đổi.
+`student/artifacts/`. Đã kiểm tra checksum 6 file artifacts trước và sau khi chạy: không đổi.
 - **Kiểm tra tái lập:** biến thể `lidar` và `fused` cho kết quả **trùng khớp**
-  `metrics_lidar.json` và `metrics_fused.json` (cùng matches, ghosts, misses, `sum_sq_err`).
-  Vì vậy mọi khác biệt ở các biến thể còn lại chỉ đến từ lệch calibration.
+`metrics_lidar.json` và `metrics_fused.json` (cùng matches, ghosts, misses, `sum_sq_err`).
+Vì vậy mọi khác biệt ở các biến thể còn lại chỉ đến từ lệch calibration.
 - Kết quả: `student/bonus/calibration_results.json` (đầy đủ) và
-  `student/bonus/calibration_table.md`.
+`student/bonus/calibration_table.md`.
 
 ### Bonus 2 — Trực quan hoá tác dụng của camera update
 
 - `student/bonus/fig1_bev_frame116.png`: BEV frame 116, gồm GT (hộp xám), detection LiDAR,
-  track LiDAR-only (□) và track fused (△), sai số 3D từng track, FOV camera FRONT.
+track LiDAR-only (□) và track fused (△), sai số 3D từng track, FOV camera FRONT.
   - T1: 0.11 → 0.07 m; T0: 0.12 → 0.09 m.
   - T10: 0.19 → 0.28 m, xấu đi. T10 vừa vào FOV, nằm sát mép ảnh, hộp 2D bị cắt nên tâm hộp lệch.
 - `student/bonus/fig2_camera_update_frame116.png`: ảnh camera FRONT frame 116, cùng crop phóng
-  to quanh từng track. Mỗi crop có đo `z` (+ xanh lá), `h(x⁻)` trước update (đỏ) và `h(x⁺)`
-  sau update (xanh lam). Camera update kéo hình chiếu track về phía đo:
-
-  | Track | \|z − h(x)\| trước → sau | d² |
-  |---|---|---|
-  | T1 | 12.0 → 3.8 px | 1.84 |
-  | T0 | 20.2 → 4.5 px | 3.63 |
-  | T10 | 39.2 → 6.0 px | 9.13 (sát cổng 10.6) |
-
+to quanh từng track. Mỗi crop có đo `z` (+ xanh lá), `h(x⁻)` trước update (đỏ) và `h(x⁺)`
+sau update (xanh lam). Camera update kéo hình chiếu track về phía đo:
+  
+  | Track | |z − h(x)| trước → sau | d²                   |
+  | ----- | ---------------------- | -------------------- |
+  | T1    | 12.0 → 3.8 px          | 1.84                 |
+  | T0    | 20.2 → 4.5 px          | 3.63                 |
+  | T10   | 39.2 → 6.0 px          | 9.13 (sát cổng 10.6) |
+  
 - `student/bonus/fig3_track_error_and_axis_rmse.png`: sai số 3D theo thời gian của hai track
-  và RMSE theo trục.
+và RMSE theo trục.
   - **T10, camera giúp nhiều nhất** (101 frame): từ frame 98 đến 115 track chưa nhận update
-    camera nào (xe ở ngoài hoặc sát mép FOV camera), nên hai đường **trùng nhau**. Lần update
-    camera đầu tiên ở frame 116 lại làm sai số **tăng** (0.19 → 0.28 m, hộp 2D bị cắt ở mép ảnh,
-    xem fig1). Sau vài frame, đường fused xuống dưới LiDAR-only và thấp hơn trong phần lớn thời
-    gian còn lại.
-    Trung bình 0.188 → 0.116 m; RMSE y 0.105 → 0.043, z 0.105 → 0.061 m. Đây là bằng chứng
-    trực tiếp tác dụng của camera update trên một track.
+  camera nào (xe ở ngoài hoặc sát mép FOV camera), nên hai đường **trùng nhau**. Lần update
+  camera đầu tiên ở frame 116 lại làm sai số **tăng** (0.19 → 0.28 m, hộp 2D bị cắt ở mép ảnh,
+  xem fig1). Sau vài frame, đường fused xuống dưới LiDAR-only và thấp hơn trong phần lớn thời
+  gian còn lại.
+  Trung bình 0.188 → 0.116 m; RMSE y 0.105 → 0.043, z 0.105 → 0.061 m. Đây là bằng chứng
+  trực tiếp tác dụng của camera update trên một track.
   - **T0, camera làm xấu nhiều nhất** (xe màu trắng phía trước, 195 frame): trung bình
-    0.141 → 0.163 m. x cải thiện (0.127 → 0.098) nhưng z xấu đi (0.043 → 0.102), do bias dọc
-    của tâm hộp 2D.
+  0.141 → 0.163 m. x cải thiện (0.127 → 0.098) nhưng z xấu đi (0.043 → 0.102), do bias dọc
+  của tâm hộp 2D.
   - **Toàn bộ 502 cặp:** x 0.108 → 0.093, y 0.079 → 0.062, z 0.068 → 0.077 m.
 
 ### Bonus 3 — Phân tích calibration: làm lệch extrinsic camera
@@ -269,26 +269,29 @@ hoặc pitch (quanh trục ngang) trong hệ camera. Đo camera vẫn lấy từ
 "tin" một calibration sai. Có 8 mức yaw và 3 mức pitch.
 
 **Cách đo.**
-- **Tỉ lệ update** = số update camera trên track confirmed / số lượt track confirmed nằm trong
-  FOV camera.
-- **γ, d² "nearest"** tính trên cặp đo gần nhất (theo d²) của mỗi track confirmed trong FOV,
-  **trước** cổng, để thấy cả những cặp bị cổng loại.
 
-| Lệch extrinsic | RMSE (m) | ΔRMSE so với fused (m) | RMSE y (m) | RMSE z (m) | tỉ lệ update camera | mean γu (px) | mean γv (px) | median d² | % cặp d² ≥ 10.6 |
-|---|---|---|---|---|---|---|---|---|---|
-| LiDAR-only (tham chiếu) | 0.150 | – | 0.079 | 0.068 | – | – | – | – | – |
-| 0 (calibration đúng) | 0.136 | +0.000 | 0.062 | 0.077 | 99% | −9.5 | +8.5 | 1.6 | 1% |
-| yaw −2° | 0.176 | +0.040 | 0.102 | 0.094 | 2% | −61.6 | −8.5 | 66.6 | 98% |
-| yaw −1° | 0.173 | +0.037 | 0.113 | 0.073 | 3% | −42.1 | +5.8 | 23.4 | 97% |
-| yaw −0.5° | 0.211 | +0.075 | 0.169 | 0.074 | 62% | −27.8 | +8.8 | 9.1 | 38% |
-| yaw +0.25° | 0.146 | +0.011 | 0.075 | 0.076 | 99% | −0.4 | +8.4 | 0.9 | 1% |
-| yaw +0.5° | 0.194 | +0.058 | 0.142 | 0.076 | 98% | +8.5 | +8.3 | 2.0 | 2% |
-| yaw +1° | 0.256 | +0.120 | 0.210 | 0.083 | 59% | +27.0 | +8.2 | 8.3 | 41% |
-| yaw +2° | 0.155 | +0.019 | 0.079 | 0.078 | 2% | +35.5 | −8.2 | 42.3 | 98% |
-| yaw +5° | 0.154 | +0.018 | 0.081 | 0.074 | 0% | +69.9 | −16.3 | 68.0 | 100% |
-| pitch +0.5° | 0.182 | +0.046 | 0.064 | 0.139 | 99% | −9.3 | −9.3 | 2.9 | 1% |
-| pitch +1° | 0.214 | +0.078 | 0.086 | 0.167 | 44% | −9.2 | −27.5 | 11.4 | 56% |
-| pitch +2° | 0.212 | +0.076 | 0.079 | 0.164 | 1% | −8.9 | −64.3 | 51.0 | 99% |
+- **Tỉ lệ update** = số update camera trên track confirmed / số lượt track confirmed nằm trong
+FOV camera.
+- **γ, d² "nearest"** tính trên cặp đo gần nhất (theo d²) của mỗi track confirmed trong FOV,
+**trước** cổng, để thấy cả những cặp bị cổng loại.
+
+
+| Lệch extrinsic          | RMSE (m) | ΔRMSE so với fused (m) | RMSE y (m) | RMSE z (m) | tỉ lệ update camera | mean γu (px) | mean γv (px) | median d² | % cặp d² ≥ 10.6 |
+| ----------------------- | -------- | ---------------------- | ---------- | ---------- | ------------------- | ------------ | ------------ | --------- | --------------- |
+| LiDAR-only (tham chiếu) | 0.150    | –                      | 0.079      | 0.068      | –                   | –            | –            | –         | –               |
+| 0 (calibration đúng)    | 0.136    | +0.000                 | 0.062      | 0.077      | 99%                 | −9.5         | +8.5         | 1.6       | 1%              |
+| yaw −2°                 | 0.176    | +0.040                 | 0.102      | 0.094      | 2%                  | −61.6        | −8.5         | 66.6      | 98%             |
+| yaw −1°                 | 0.173    | +0.037                 | 0.113      | 0.073      | 3%                  | −42.1        | +5.8         | 23.4      | 97%             |
+| yaw −0.5°               | 0.211    | +0.075                 | 0.169      | 0.074      | 62%                 | −27.8        | +8.8         | 9.1       | 38%             |
+| yaw +0.25°              | 0.146    | +0.011                 | 0.075      | 0.076      | 99%                 | −0.4         | +8.4         | 0.9       | 1%              |
+| yaw +0.5°               | 0.194    | +0.058                 | 0.142      | 0.076      | 98%                 | +8.5         | +8.3         | 2.0       | 2%              |
+| yaw +1°                 | 0.256    | +0.120                 | 0.210      | 0.083      | 59%                 | +27.0        | +8.2         | 8.3       | 41%             |
+| yaw +2°                 | 0.155    | +0.019                 | 0.079      | 0.078      | 2%                  | +35.5        | −8.2         | 42.3      | 98%             |
+| yaw +5°                 | 0.154    | +0.018                 | 0.081      | 0.074      | 0%                  | +69.9        | −16.3        | 68.0      | 100%            |
+| pitch +0.5°             | 0.182    | +0.046                 | 0.064      | 0.139      | 99%                 | −9.3         | −9.3         | 2.9       | 1%              |
+| pitch +1°               | 0.214    | +0.078                 | 0.086      | 0.167      | 44%                 | −9.2         | −27.5        | 11.4      | 56%             |
+| pitch +2°               | 0.212    | +0.076                 | 0.079      | 0.164      | 1%                  | −8.9         | −64.3        | 51.0      | 99%             |
+
 
 Matches, ghosts và misses giữ nguyên 502 / 0 / 239 ở mọi biến thể, trừ yaw +5° (499 / 1 / 242).
 Camera không quyết định vòng đời track, nên lệch calibration gần như chỉ thể hiện qua RMSE. Hình `student/bonus/fig4_calibration_sweep.png` vẽ
@@ -299,27 +302,28 @@ Cột ΔRMSE so với fused có calibration đúng. Ngưỡng nhất quán của
 pitch +2° (+0.062) vượt ngưỡng; yaw +0.5° (+0.043) vẫn trong ngưỡng.
 
 **Nhận xét.**
+
 1. **Triệu chứng trên innovation.** Khi lệch nhỏ (yaw −0.5° đến +1°, pitch tới +2°), mean γ dịch
-   tuyến tính theo góc lệch, khoảng 36 px/°, khớp với f·π/180 = 36.4 px/° (f = 2083 px). Trong
-   vùng này yaw chỉ dịch `u`, pitch chỉ dịch `v`, nên nhìn trung bình innovation theo từng trục
-   là chẩn đoán được loại lệch. Ở yaw −1°, ±2°, +5°, chỉ số "nearest" bão hoà (15.9–32.6 px/°)
-   và γv đổi dấu, có thể vì cặp gần nhất không còn là hộp của chính xe đó (chưa kiểm chứng).
+ tuyến tính theo góc lệch, khoảng 36 px/°, khớp với f·π/180 = 36.4 px/° (f = 2083 px). Trong
+ vùng này yaw chỉ dịch `u`, pitch chỉ dịch `v`, nên nhìn trung bình innovation theo từng trục
+ là chẩn đoán được loại lệch. Ở yaw −1°, ±2°, +5°, chỉ số "nearest" bão hoà (15.9–32.6 px/°)
+ và γv đổi dấu, có thể vì cặp gần nhất không còn là hộp của chính xe đó (chưa kiểm chứng).
 2. **Gating chặn hay không chặn.** Cổng `d² < 10.6` xét **từng cặp** nên:
-   - **không chặn** lệch ≤ 0.5° theo hướng bù bias: median d² chỉ 0.9–2.9, nhưng RMSE đã tăng
-     tới +0.058 m so với fused đúng calibration (yaw +0.5°: 0.194 m, xấu hơn LiDAR-only 0.043 m,
-     sát ngưỡng nhất quán 0.05 m);
-   - **chặn một phần** ở mức lệch trung bình (38–56% cặp bị loại), và đây là vùng tệ nhất,
-     vì các cặp lọt qua đều lệch cùng một hướng (yaw +1°: +0.106 m so với LiDAR-only, vượt
-     ngưỡng nhất quán);
-   - **chặn gần hết** ở mức lệch lớn (97–100%). Nhưng track mới có `P` lớn làm cổng rộng, nên vài
-     update lệch vẫn lọt qua (35–62% số update còn lại rơi vào track chưa confirmed) và RMSE
-     không trở về LiDAR-only (pitch +2°: 0.212 m).
+  - **không chặn** lệch ≤ 0.5° theo hướng bù bias: median d² chỉ 0.9–2.9, nhưng RMSE đã tăng
+   tới +0.058 m so với fused đúng calibration (yaw +0.5°: 0.194 m, xấu hơn LiDAR-only 0.043 m,
+   sát ngưỡng nhất quán 0.05 m);
+  - **chặn một phần** ở mức lệch trung bình (38–56% cặp bị loại), và đây là vùng tệ nhất,
+  vì các cặp lọt qua đều lệch cùng một hướng (yaw +1°: +0.106 m so với LiDAR-only, vượt
+  ngưỡng nhất quán);
+  - **chặn gần hết** ở mức lệch lớn (97–100%). Nhưng track mới có `P` lớn làm cổng rộng, nên vài
+  update lệch vẫn lọt qua (35–62% số update còn lại rơi vào track chưa confirmed) và RMSE
+  không trở về LiDAR-only (pitch +2°: 0.212 m).
 3. **Bias γu ≈ −9.5 px không phải lỗi calibration.** Lệch yaw +0.25° đưa γu về ≈ −0.4 px nhưng
-   RMSE lại tăng từ 0.136 lên 0.146 m (y: 0.062 → 0.075 m). Bias này nằm ở định nghĩa đo (tâm
-   hộp 2D khác hình chiếu tâm 3D), không phải ở extrinsic. Vì vậy không nên "hiệu chỉnh"
-   calibration chỉ để triệt tiêu trung bình innovation.
+ RMSE lại tăng từ 0.136 lên 0.146 m (y: 0.062 → 0.075 m). Bias này nằm ở định nghĩa đo (tâm
+ hộp 2D khác hình chiếu tâm 3D), không phải ở extrinsic. Vì vậy không nên "hiệu chỉnh"
+ calibration chỉ để triệt tiêu trung bình innovation.
 4. **Thực tế.** Lệch 0.5° là rất nhỏ với extrinsic thật, nhưng đã đủ làm fused xấu hơn
-   LiDAR-only. Một hệ thật cần giám sát trung bình innovation và cổng chặt hơn cho track mới.
+ LiDAR-only. Một hệ thật cần giám sát trung bình innovation và cổng chặt hơn cho track mới.
 
 **Bonus 1 (CVAT): không làm.** Cần CVAT server hoặc tài khoản để import và chụp màn hình, và
 `export_cvat.export_tracks_json` của platform chỉ là stub, không xuất định dạng CVAT import được.
@@ -336,9 +340,9 @@ Ghi rõ, kể cả khi không dùng ("Không dùng AI"). Xem [RULES.md](../RULES
   - debug lỗi `float()` trên `np.matrix` 1×1 trong `mahalanobis_distance`;
   - chạy `fusion-run-lab`, viết script kiểm tra artifacts, soạn nháp báo cáo này;
   - bonus: viết `student/bonus/bonus_study.py` (trực quan hoá + quét lệch calibration), chạy
-    script và soạn nháp mục Bonus;
+  script và soạn nháp mục Bonus;
   - rà soát lại toàn bài trước khi nộp: sửa các chỗ báo cáo không khớp số liệu (ngưỡng nhất
-    quán so với LiDAR-only, khoảng tuyến tính của độ dịch innovation, mô tả T10 ở frame 116).
+  quán so với LiDAR-only, khoảng tuyến tính của độ dịch innovation, mô tả T10 ở frame 116).
 - Cách bạn đã kiểm tra lại (pytest, chạy Waymo, đối chiếu công thức):
   - `pytest student/tests -q` cho 128 passed, 0 failed, 0 xfailed;
   - đối chiếu công thức với `docs/HUONG_DAN_KY_THUAT.md`, các TODO trong stub và
@@ -348,8 +352,8 @@ Ghi rõ, kể cả khi không dùng ("Không dùng AI"). Xem [RULES.md](../RULES
   biến đúng, detection giống nhau ở hai mode);
   - mọi số liệu trong báo cáo được lấy trực tiếp từ `metrics.json` và `grade_run.log`;
   - bonus: biến thể `lidar`/`fused` của script tái lập đúng artifacts chấm điểm; độ dịch
-    innovation đo được (≈ 36 px/°) khớp với lý thuyết f·π/180; checksum artifacts không đổi sau
-    khi chạy; bảng bonus được sinh trực tiếp từ `calibration_results.json`.
+  innovation đo được (≈ 36 px/°) khớp với lý thuyết f·π/180; checksum artifacts không đổi sau
+  khi chạy; bảng bonus được sinh trực tiếp từ `calibration_results.json`.
 
 ## Checklist nộp
 
